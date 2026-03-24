@@ -4,7 +4,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export async function generateOutline(niche: string, audience: string, keyword: string) {
   try {
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
       throw new Error("Gemini API Key is missing. Please check your environment variables.");
     }
     const response = await ai.models.generateContent({
@@ -20,7 +21,8 @@ export async function generateOutline(niche: string, audience: string, keyword: 
 
 export async function generateDraft(niche: string, audience: string, keyword: string, length: string, outline: string) {
   try {
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
       throw new Error("Gemini API Key is missing. Please check your environment variables.");
     }
     const response = await ai.models.generateContent({
