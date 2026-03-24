@@ -53,7 +53,7 @@ export default function Dashboard() {
       console.error("Outline Generation Error:", error);
       const errorMessage = error.message || "Unknown error";
       if (errorMessage.includes("API Key is missing")) {
-        toast.error("Gemini API Key is not configured. Please set GEMINI_API_KEY in your environment.");
+        toast.error("Gemini API Key is not configured. Please set GEMINI_API_KEY in your environment variables via the Settings menu.");
       } else if (errorMessage.includes("Quota exceeded")) {
         toast.error("AI quota exceeded. Please try again later.");
       } else {
