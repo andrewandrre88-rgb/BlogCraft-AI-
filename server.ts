@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import dotenv from "dotenv";
+import cors from "cors";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 
@@ -51,6 +52,13 @@ async function startServer() {
   const PORT = 3000;
   const db = getDb();
 
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
+
+  app.use(cors());
+  
   // Stripe Webhook needs raw body - MUST be before express.json()
   app.post("/api/webhook", express.raw({ type: "application/json" }), async (req, res) => {
     console.log("Webhook received");
@@ -99,6 +107,13 @@ async function startServer() {
   });
 
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Log all API requests for debugging
+  app.use("/api", (req, res, next) => {
+    console.log(`API Request: ${req.method} ${req.url}`);
+    next();
+  });
 
   // API Routes
   app.get("/api/health", (req, res) => {
@@ -114,6 +129,7 @@ async function startServer() {
   app.post("/api/create-checkout-session", async (req, res) => {
     console.log("Create checkout session request received", req.body);
     if (!stripe) {
+      console.error("Stripe not configured");
       return res.status(500).json({ error: "Stripe is not configured on the server." });
     }
 
@@ -172,6 +188,12 @@ async function startServer() {
       console.error("Stripe Session Error:", error);
       res.status(500).json({ error: error.message });
     }
+  });
+
+  // 404 handler for API routes
+  app.all("/api/*", (req, res) => {
+    console.warn(`API 404: ${req.method} ${req.url}`);
+    res.status(404).json({ error: `API route not found: ${req.method} ${req.url}` });
   });
 
   // Global Error Handler for API routes

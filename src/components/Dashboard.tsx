@@ -33,6 +33,14 @@ export default function Dashboard() {
     };
     checkHealth();
 
+    // Check for Stripe success
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('session_id')) {
+      toast.success("Thank you for upgrading! Your subscription is now active.");
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     const fetchProfile = async () => {
       if (auth.currentUser) {
         const userRef = doc(db, "users", auth.currentUser.uid);

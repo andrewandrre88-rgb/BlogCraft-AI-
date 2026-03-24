@@ -36,32 +36,58 @@ export default function Pricing() {
     }
 
     setLoading(true);
-    try {
-      if (!auth.currentUser) {
-        toast.error("Please sign in to upgrade.");
-        return;
-      }
-      
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: auth.currentUser.uid,
-          email: auth.currentUser.email,
-          plan: plan,
-        }),
-      });
+    let attempts = 0;
+    const maxAttempts = 2;
 
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || "Failed to create checkout session");
+    const attemptCheckout = async (): Promise<void> => {
+      try {
+        if (!auth.currentUser) {
+          toast.error("Please sign in to upgrade.");
+          return;
+        }
+        
+        const response = await fetch("/api/create-checkout-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: auth.currentUser.uid,
+            email: auth.currentUser.email,
+            plan: plan,
+          }),
+        });
+
+        console.log(`Checkout session response status (Attempt ${attempts + 1}):`, response.status);
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error("Non-JSON response from server:", text);
+          if (attempts < maxAttempts - 1) {
+            attempts++;
+            console.log(`Retrying checkout attempt ${attempts + 1}...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return attemptCheckout();
+          }
+          throw new Error("The server returned an invalid response. This often happens if the API route is missing or the server is restarting. Please try again in a few seconds.");
+        }
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || "Failed to create checkout session");
+        }
+      } catch (error: any) {
+        console.error(error);
+        throw error;
       }
+    };
+
+    try {
+      await attemptCheckout();
     } catch (error: any) {
-      console.error(error);
       toast.error(`Failed to start checkout: ${error.message}`);
     } finally {
       setLoading(false);
