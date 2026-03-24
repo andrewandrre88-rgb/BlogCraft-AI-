@@ -71,7 +71,8 @@ export default function Pricing() {
             await new Promise(resolve => setTimeout(resolve, 2000));
             return attemptCheckout();
           }
-          throw new Error("The server returned an invalid response. This often happens if the API route is missing or the server is restarting. Please try again in a few seconds.");
+          const preview = text.slice(0, 100).replace(/<[^>]*>?/gm, '');
+          throw new Error(`The server returned an invalid response (${response.status}). This often happens if the API route is missing or the server is restarting. Response preview: ${preview}...`);
         }
 
         if (data.url) {

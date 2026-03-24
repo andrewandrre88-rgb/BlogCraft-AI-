@@ -115,9 +115,17 @@ async function startServer() {
 
   // Log all API requests for debugging
   app.use("/api", (req, res, next) => {
-    console.log(`API Request: ${req.method} ${req.url}`);
+    console.log(`[API] ${req.method} ${req.url}`);
     next();
   });
+
+  // Helper to get base URL for Stripe redirects
+  const getBaseUrl = (req: express.Request) => {
+    if (process.env.APP_URL) return process.env.APP_URL.replace(/\/$/, "");
+    const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+    const host = req.headers["x-forwarded-host"] || req.get("host");
+    return `${protocol}://${host}`;
+  };
 
   // API Routes
   app.get("/api/health", (req, res) => {
@@ -131,16 +139,17 @@ async function startServer() {
   });
 
   app.post("/api/create-checkout-session", async (req, res) => {
-    console.log("Create checkout session request received", req.body);
+    console.log("Create checkout session request body:", JSON.stringify(req.body));
     if (!stripe) {
       console.error("Stripe not configured");
-      return res.status(500).json({ error: "Stripe is not configured on the server." });
+      return res.status(500).json({ error: "Stripe is not configured on the server. Please set STRIPE_SECRET_KEY." });
     }
 
     try {
       const { userId, email, plan } = req.body;
       
       if (!userId || !email) {
+        console.error("Missing userId or email in request body");
         return res.status(400).json({ error: "Missing userId or email" });
       }
 
@@ -158,6 +167,8 @@ async function startServer() {
       };
 
       const selectedPlan = planConfig[plan] || planConfig.pro;
+      const baseUrl = getBaseUrl(req);
+      console.log(`Using base URL for Stripe: ${baseUrl}`);
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -178,8 +189,8 @@ async function startServer() {
           },
         ],
         mode: "subscription",
-        success_url: `${req.headers.origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/pricing`,
+        success_url: `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/pricing`,
         customer_email: email,
         metadata: {
           userId: userId,
@@ -187,10 +198,11 @@ async function startServer() {
         },
       });
 
+      console.log("Stripe session created successfully:", session.id);
       res.json({ url: session.url });
     } catch (error: any) {
       console.error("Stripe Session Error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message || "Failed to create Stripe session" });
     }
   });
 
@@ -200,12 +212,15 @@ async function startServer() {
     res.status(404).json({ error: `API route not found: ${req.method} ${req.url}` });
   });
 
-  // Global Error Handler for API routes
-  app.use("/api", (err: any, req: any, res: any, next: any) => {
-    console.error("API Error:", err);
-    res.status(err.status || 500).json({
-      error: err.message || "Internal Server Error",
-    });
+  // Global Error Handler
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error("Global Error Handler:", err);
+    if (req.path.startsWith("/api")) {
+      return res.status(err.status || 500).json({
+        error: err.message || "Internal Server Error",
+      });
+    }
+    next(err);
   });
 
   // Vite middleware for development
