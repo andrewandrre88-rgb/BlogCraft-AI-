@@ -49,9 +49,16 @@ export default function Dashboard() {
       setOutline(res);
       setStep(2);
       toast.success("Outline generated!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to generate outline.");
+    } catch (error: any) {
+      console.error("Outline Generation Error:", error);
+      const errorMessage = error.message || "Unknown error";
+      if (errorMessage.includes("API Key is missing")) {
+        toast.error("Gemini API Key is not configured. Please set GEMINI_API_KEY in your environment.");
+      } else if (errorMessage.includes("Quota exceeded")) {
+        toast.error("AI quota exceeded. Please try again later.");
+      } else {
+        toast.error(`Failed to generate outline: ${errorMessage}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -87,9 +94,10 @@ export default function Dashboard() {
       }
       
       toast.success("Draft generated and saved to history!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to generate draft.");
+    } catch (error: any) {
+      console.error("Draft Generation Error:", error);
+      const errorMessage = error.message || "Unknown error";
+      toast.error(`Failed to generate draft: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
