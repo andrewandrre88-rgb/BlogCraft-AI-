@@ -39,32 +39,41 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.05),transparent_70%)] pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
+
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md text-center"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-xl text-center relative z-10"
       >
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-8 shadow-xl">
-          <PenTool className="text-white w-8 h-8" />
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 rounded-[24px] mb-12 shadow-2xl shadow-indigo-600/20">
+          <PenTool className="text-white w-10 h-10" />
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">BlogCraft AI</h1>
-        <p className="text-lg text-gray-600 mb-12">
-          Generate high-quality blog posts in seconds. Optimized for SEO and your specific audience.
+        
+        <h1 className="text-7xl font-serif italic tracking-tight text-white mb-6">BlogCraft AI</h1>
+        <p className="text-xl text-white/40 font-light mb-16 max-w-md mx-auto leading-relaxed">
+          The ultimate companion for modern storytellers. Craft high-quality, SEO-optimized blog posts in seconds.
         </p>
 
         <button
           onClick={handleSignIn}
-          className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 text-gray-900 px-6 py-4 rounded-xl font-semibold hover:border-black hover:bg-gray-50 transition-all shadow-sm"
+          className="w-full flex items-center justify-center gap-4 bg-white text-black px-8 py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
         >
-          <Chrome className="w-6 h-6" />
-          Continue with Google
+          <Chrome className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+          <span className="text-lg">Continue with Google</span>
         </button>
 
-        <div className="mt-12 grid grid-cols-3 gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-          <div className="text-xs font-mono uppercase tracking-widest">SEO Optimized</div>
-          <div className="text-xs font-mono uppercase tracking-widest">AI Powered</div>
-          <div className="text-xs font-mono uppercase tracking-widest">Fast Drafts</div>
+        <div className="mt-20 flex items-center justify-center gap-12 opacity-20 grayscale hover:grayscale-0 transition-all duration-700">
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">SEO Optimized</div>
+          <div className="w-1 h-1 bg-white/50 rounded-full" />
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">AI Powered</div>
+          <div className="w-1 h-1 bg-white/50 rounded-full" />
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">Fast Drafts</div>
         </div>
       </motion.div>
     </div>

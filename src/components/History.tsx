@@ -50,30 +50,30 @@ export default function History() {
   );
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
+    <div className="space-y-12">
+      <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">History</h1>
-          <p className="text-gray-500 mt-1">Your generated blog posts.</p>
+          <h1 className="text-5xl font-serif tracking-tight text-white mb-2">History</h1>
+          <p className="text-white/40 text-lg font-light">Your collection of AI-crafted stories.</p>
         </div>
-        <div className="relative w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <div className="relative w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search posts..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-black focus:ring-0 transition-all text-sm"
+            placeholder="Search your archives..."
+            className="w-full bg-white/5 pl-12 pr-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* List */}
         <div className="lg:col-span-1 space-y-4">
           {filteredPosts.length === 0 ? (
-            <div className="bg-white p-8 rounded-2xl border border-dashed border-gray-300 text-center">
-              <p className="text-gray-500 text-sm">No posts found.</p>
+            <div className="glass p-10 rounded-[32px] border border-dashed border-white/10 text-center">
+              <p className="text-white/20 text-sm font-medium">No archives found.</p>
             </div>
           ) : (
             filteredPosts.map((post) => (
@@ -81,26 +81,26 @@ export default function History() {
                 key={post.id}
                 layoutId={post.id}
                 onClick={() => setSelectedPost(post)}
-                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                className={`p-6 rounded-2xl border cursor-pointer transition-all duration-300 ${
                   selectedPost?.id === post.id
-                    ? "bg-black text-white border-black shadow-lg"
-                    : "bg-white text-gray-900 border-gray-200 hover:border-black"
+                    ? "bg-indigo-600 text-white border-indigo-500 shadow-2xl shadow-indigo-600/20"
+                    : "glass text-white/60 border-white/5 hover:border-white/20 hover:text-white"
                 }`}
               >
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-bold text-sm line-clamp-2">{post.title}</h3>
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-serif text-lg leading-tight line-clamp-2">{post.title}</h3>
                   <button
                     onClick={(e) => handleDelete(post.id, e)}
-                    className={`p-1 rounded-md hover:bg-red-500 hover:text-white transition-colors ${
-                      selectedPost?.id === post.id ? "text-gray-400" : "text-gray-300"
+                    className={`p-2 rounded-xl transition-colors ${
+                      selectedPost?.id === post.id ? "text-white/40 hover:text-white hover:bg-white/10" : "text-white/10 hover:text-red-400 hover:bg-red-400/10"
                     }`}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] opacity-70 uppercase tracking-wider font-mono">
-                  <Calendar size={10} />
-                  {post.createdAt?.toDate().toLocaleDateString()}
+                <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold opacity-40">
+                  <Calendar size={12} />
+                  {post.createdAt?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </div>
               </motion.div>
             ))
@@ -113,37 +113,41 @@ export default function History() {
             {selectedPost ? (
               <motion.div
                 key={selectedPost.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm prose prose-slate max-w-none"
+                exit={{ opacity: 0, y: -20 }}
+                className="glass p-12 rounded-[40px] shadow-2xl"
               >
-                <div className="flex items-center justify-between mb-8 pb-4 border-bottom border-gray-100">
+                <div className="flex items-start justify-between mb-12 pb-8 border-b border-white/5">
                   <div>
-                    <h2 className="text-2xl font-bold m-0">{selectedPost.title}</h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {selectedPost.niche} • {selectedPost.audience} • {selectedPost.length}
-                    </p>
+                    <h2 className="text-4xl font-serif text-white mb-4 leading-tight">{selectedPost.title}</h2>
+                    <div className="flex flex-wrap gap-3">
+                      <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.niche}</span>
+                      <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.audience}</span>
+                      <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.length}</span>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(selectedPost.draft);
                         toast.success("Copied to clipboard!");
                       }}
-                      className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                      className="p-4 rounded-2xl glass hover:bg-white/10 transition-all text-white/60 hover:text-white shadow-xl"
                       title="Copy Draft"
                     >
-                      <FileText size={18} />
+                      <FileText size={20} />
                     </button>
                   </div>
                 </div>
-                <ReactMarkdown>{selectedPost.draft}</ReactMarkdown>
+                <div className="prose-premium">
+                  <ReactMarkdown>{selectedPost.draft}</ReactMarkdown>
+                </div>
               </motion.div>
             ) : (
-              <div className="h-full min-h-[400px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400">
-                <FileText size={48} className="mb-4 opacity-20" />
-                <p className="text-sm font-medium">Select a post to preview</p>
+              <div className="h-full min-h-[500px] glass rounded-[40px] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10">
+                <FileText size={64} className="mb-6 opacity-5" />
+                <p className="text-lg font-light tracking-wide">Select a post to preview its content</p>
               </div>
             )}
           </AnimatePresence>

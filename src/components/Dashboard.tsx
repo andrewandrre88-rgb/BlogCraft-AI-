@@ -104,96 +104,97 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
+    <div className="space-y-12">
+      <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Post Generator</h1>
-          <p className="text-gray-500 mt-1">Create high-quality content with AI.</p>
+          <h1 className="text-5xl font-serif tracking-tight text-white mb-2">Post Generator</h1>
+          <p className="text-white/40 text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-full border border-gray-200 flex items-center gap-2 shadow-sm">
-          <div className={`w-2 h-2 rounded-full ${userProfile?.subscriptionStatus === 'pro' ? 'bg-indigo-500' : 'bg-green-500'}`} />
-          <span className="text-sm font-medium uppercase tracking-wider text-gray-600">
+        <div className="glass px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
+          <div className={`w-2.5 h-2.5 rounded-full ${userProfile?.subscriptionStatus === 'pro' ? 'bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]'}`} />
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
             {userProfile?.subscriptionStatus || 'Free'} Plan
           </span>
-          <span className="text-xs text-gray-400 ml-2">
-            ({userProfile?.postsThisMonth || 0} / {userProfile?.subscriptionStatus === 'pro' ? '∞' : '1'} used)
+          <div className="w-px h-4 bg-white/10 mx-1" />
+          <span className="text-xs font-mono text-white/40">
+            {userProfile?.postsThisMonth || 0} / {userProfile?.subscriptionStatus === 'pro' ? '∞' : '1'}
           </span>
         </div>
       </header>
 
       {/* Stepper */}
-      <div className="flex items-center gap-4 mb-8">
-        <StepIndicator active={step >= 1} label="Configure" icon={<Sparkles size={16} />} />
-        <div className="h-px flex-1 bg-gray-200" />
-        <StepIndicator active={step >= 2} label="Outline" icon={<List size={16} />} />
-        <div className="h-px flex-1 bg-gray-200" />
-        <StepIndicator active={step >= 3} label="Draft" icon={<FileText size={16} />} />
+      <div className="flex items-center gap-6">
+        <StepIndicator active={step >= 1} label="Configure" icon={<Sparkles size={18} />} />
+        <div className={`h-px flex-1 transition-all duration-500 ${step > 1 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <StepIndicator active={step >= 2} label="Outline" icon={<List size={18} />} />
+        <div className={`h-px flex-1 transition-all duration-500 ${step > 2 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <StepIndicator active={step >= 3} label="Draft" icon={<FileText size={18} />} />
       </div>
 
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.form
             key="step1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             onSubmit={handleGenerateOutline}
-            className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6"
+            className="glass p-10 rounded-[32px] shadow-2xl space-y-8"
           >
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Website Niche</label>
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Website Niche</label>
                 <input
                   required
                   type="text"
-                  placeholder="e.g. Sustainable Living, Tech Reviews"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:ring-0 transition-all"
+                  placeholder="e.g. Sustainable Living"
+                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.niche}
                   onChange={(e) => setFormData({ ...formData, niche: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Target Audience</label>
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Target Audience</label>
                 <input
                   required
                   type="text"
                   placeholder="e.g. Eco-conscious millennials"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:ring-0 transition-all"
+                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.audience}
                   onChange={(e) => setFormData({ ...formData, audience: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Primary Keyword</label>
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Primary Keyword</label>
                 <input
                   required
                   type="text"
                   placeholder="e.g. zero waste kitchen tips"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:ring-0 transition-all"
+                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.keyword}
                   onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Target Length</label>
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Target Length</label>
                 <select
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:ring-0 transition-all"
+                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white appearance-none cursor-pointer"
                   value={formData.length}
                   onChange={(e) => setFormData({ ...formData, length: e.target.value })}
                 >
-                  <option>500 words</option>
-                  <option>1000 words</option>
-                  <option>1500 words</option>
-                  <option>2000+ words</option>
+                  <option className="bg-[#111]">500 words</option>
+                  <option className="bg-[#111]">1000 words</option>
+                  <option className="bg-[#111]">1500 words</option>
+                  <option className="bg-[#111]">2000+ words</option>
                 </select>
               </div>
             </div>
             <button
               disabled={loading}
               type="submit"
-              className="w-full bg-black text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all disabled:opacity-50"
+              className="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 group"
             >
-              {loading ? <Loader2 className="animate-spin" /> : <ChevronRight />}
+              {loading ? <Loader2 className="animate-spin" /> : <Sparkles className="group-hover:rotate-12 transition-transform" />}
               Generate Outline
             </button>
           </motion.form>
@@ -202,28 +203,30 @@ export default function Dashboard() {
         {step === 2 && (
           <motion.div
             key="step2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-8"
           >
-            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm prose prose-slate max-w-none">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <List className="text-indigo-500" /> Proposed Outline
+            <div className="glass p-10 rounded-[32px] shadow-2xl">
+              <h2 className="text-2xl font-serif mb-8 flex items-center gap-3">
+                <List className="text-indigo-400" /> Proposed Outline
               </h2>
-              <ReactMarkdown>{outline}</ReactMarkdown>
+              <div className="prose-premium">
+                <ReactMarkdown>{outline}</ReactMarkdown>
+              </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 bg-white border border-gray-200 text-gray-600 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all"
+                className="flex-1 glass text-white/60 py-5 rounded-2xl font-bold hover:text-white hover:bg-white/5 transition-all"
               >
                 Back to Config
               </button>
               <button
                 disabled={loading}
                 onClick={handleGenerateDraft}
-                className="flex-[2] bg-black text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all disabled:opacity-50"
+                className="flex-[2] bg-indigo-600 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                 Generate Full Draft
@@ -235,23 +238,25 @@ export default function Dashboard() {
         {step === 3 && (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
           >
-            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm prose prose-slate max-w-none">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <CheckCircle2 className="text-green-500" /> Full Draft Ready
+            <div className="glass p-10 rounded-[32px] shadow-2xl">
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-2xl font-serif flex items-center gap-3">
+                  <CheckCircle2 className="text-emerald-400" /> Full Draft Ready
                 </h2>
                 <button
                   onClick={() => window.location.href = '/history'}
-                  className="text-sm font-medium text-indigo-600 hover:underline"
+                  className="text-sm font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   View in History
                 </button>
               </div>
-              <ReactMarkdown>{draft}</ReactMarkdown>
+              <div className="prose-premium">
+                <ReactMarkdown>{draft}</ReactMarkdown>
+              </div>
             </div>
             <button
               onClick={() => {
@@ -260,7 +265,7 @@ export default function Dashboard() {
                 setDraft("");
                 setFormData({ niche: "", audience: "", keyword: "", length: "1000 words" });
               }}
-              className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-all"
+              className="w-full bg-white text-black py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-xl shadow-white/10"
             >
               Start New Post
             </button>
@@ -273,11 +278,11 @@ export default function Dashboard() {
 
 function StepIndicator({ active, label, icon }: { active: boolean; label: string; icon: React.ReactNode }) {
   return (
-    <div className={`flex items-center gap-2 ${active ? "text-black" : "text-gray-400"}`}>
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${active ? "border-black bg-black text-white" : "border-gray-200"}`}>
+    <div className={`flex items-center gap-3 transition-all duration-500 ${active ? "text-white" : "text-white/20"}`}>
+      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border transition-all duration-500 ${active ? "border-indigo-500/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "border-white/5 bg-white/5"}`}>
         {icon}
       </div>
-      <span className="text-sm font-semibold">{label}</span>
+      <span className="text-sm font-bold uppercase tracking-widest">{label}</span>
     </div>
   );
 }
