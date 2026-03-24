@@ -8,8 +8,20 @@ import { toast } from "sonner";
 export default function Pricing() {
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [stripeReady, setStripeReady] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        setStripeReady(data.stripeConfigured);
+      } catch (e) {
+        console.error("Health check failed:", e);
+      }
+    };
+    checkHealth();
+
     if (!auth.currentUser) return;
     const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
       setUserProfile(doc.data());
@@ -18,19 +30,38 @@ export default function Pricing() {
   }, []);
 
   const handleUpgrade = async () => {
+    if (stripeReady === false) {
+      toast.error("Stripe is not configured. Please set STRIPE_SECRET_KEY in the Settings menu.");
+      return;
+    }
+
     setLoading(true);
     try {
-      if (!auth.currentUser) return;
+      if (!auth.currentUser) {
+        toast.error("Please sign in to upgrade.");
+        return;
+      }
       
-      const userRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(userRef, {
-        subscriptionStatus: "pro"
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: auth.currentUser.uid,
+          email: auth.currentUser.email,
+        }),
       });
-      
-      toast.success("Successfully upgraded to Pro! (Mocked for now)");
-    } catch (error) {
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+    } catch (error: any) {
       console.error(error);
-      toast.error("Failed to upgrade.");
+      toast.error(`Failed to start checkout: ${error.message}`);
     } finally {
       setLoading(false);
     }
