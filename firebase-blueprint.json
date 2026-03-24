@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and subscription data.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "subscriptionStatus": { "type": "string", "enum": ["free", "pro"] },
+        "postsThisMonth": { "type": "integer" },
+        "lastPostDate": { "type": "string", "format": "date-time" },
+        "stripeCustomerId": { "type": "string" }
+      },
+      "required": ["uid", "email", "subscriptionStatus", "postsThisMonth"]
+    },
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "Generated blog post draft.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "title": { "type": "string" },
+        "niche": { "type": "string" },
+        "audience": { "type": "string" },
+        "keyword": { "type": "string" },
+        "length": { "type": "string" },
+        "outline": { "type": "string" },
+        "draft": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "title", "draft", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data."
+    },
+    "/posts/{postId}": {
+      "schema": "BlogPost",
+      "description": "Generated blog posts."
+    }
+  }
+}
