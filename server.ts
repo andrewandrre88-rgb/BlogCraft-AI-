@@ -55,8 +55,11 @@ async function startServer() {
   app.use((req, res, next) => {
     const start = Date.now();
     res.on('finish', () => {
-      const duration = Date.now() - start;
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} ${res.statusCode} ${duration}ms`);
+      // Only log API requests or errors to reduce noise
+      if (req.url.startsWith('/api') || res.statusCode >= 400) {
+        const duration = Date.now() - start;
+        console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} ${res.statusCode} ${duration}ms`);
+      }
     });
     next();
   });
