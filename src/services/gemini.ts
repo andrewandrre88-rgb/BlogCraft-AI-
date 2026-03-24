@@ -1,13 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-
 export async function generateOutline(niche: string, audience: string, keyword: string) {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error("Gemini API Key is missing. Please check your environment variables.");
     }
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Generate a detailed blog post outline for a blog in the ${niche} niche, targeting ${audience}. The main keyword is "${keyword}". Use Markdown format.`,
@@ -25,6 +24,7 @@ export async function generateDraft(niche: string, audience: string, keyword: st
     if (!apiKey) {
       throw new Error("Gemini API Key is missing. Please check your environment variables.");
     }
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Write a full blog post based on the following outline:
