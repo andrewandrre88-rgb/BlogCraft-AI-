@@ -1,11 +1,18 @@
 import { auth, db } from "../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { PenTool, Chrome } from "lucide-react";
+import { PenTool, Chrome, ExternalLink, AlertCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 export default function Auth() {
+  const [isIframe, setIsIframe] = useState(false);
+
+  useEffect(() => {
+    setIsIframe(window.self !== window.top);
+  }, []);
+
   const handleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -32,6 +39,8 @@ export default function Auth() {
         toast.error("Sign-in popup was blocked. Please allow popups for this site.");
       } else if (error.code === "auth/unauthorized-domain") {
         toast.error("This domain is not authorized for Google Sign-in. Please check your Firebase console.");
+      } else if (error.code === "auth/internal-error" || error.message?.includes("cross-origin")) {
+        toast.error("Mobile browser restriction detected. Please use the 'Open in New Tab' button below.");
       } else {
         toast.error(`Failed to sign in: ${error.message || "Please try again."}`);
       }
@@ -60,13 +69,33 @@ export default function Auth() {
           The ultimate companion for modern storytellers. Craft high-quality, SEO-optimized blog posts in seconds.
         </p>
 
-        <button
-          onClick={handleSignIn}
-          className="w-full flex items-center justify-center gap-4 bg-white text-black px-8 py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
-        >
-          <Chrome className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <span className="text-lg">Continue with Google</span>
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={handleSignIn}
+            className="w-full flex items-center justify-center gap-4 bg-white text-black px-8 py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
+          >
+            <Chrome className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+            <span className="text-lg">Continue with Google</span>
+          </button>
+
+          {isIframe && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 justify-center text-amber-400/80 text-xs font-medium bg-amber-400/5 py-3 px-4 rounded-xl border border-amber-400/10">
+                <AlertCircle size={14} />
+                <span>Mobile login may be blocked in this view</span>
+              </div>
+              <a
+                href={window.location.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-4 bg-white/5 text-white/70 border border-white/10 px-8 py-5 rounded-2xl font-bold hover:bg-white/10 hover:text-white transition-all group"
+              >
+                <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <span className="text-lg">Open in New Tab</span>
+              </a>
+            </div>
+          )}
+        </div>
 
         <div className="mt-20 flex items-center justify-center gap-12 opacity-20 grayscale hover:grayscale-0 transition-all duration-700">
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">SEO Optimized</div>

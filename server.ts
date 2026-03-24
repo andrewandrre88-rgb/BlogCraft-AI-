@@ -18,11 +18,9 @@ async function startServer() {
 
   // API Routes
   app.get("/api/health", (req, res) => {
-    const envKeys = Object.keys(process.env);
     res.json({ 
       status: "ok", 
-      geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY),
-      availableKeys: envKeys.filter(key => !key.includes("SECRET") && !key.includes("KEY") || key === "GEMINI_API_KEY" || key === "API_KEY")
+      geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY)
     });
   });
 
