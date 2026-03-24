@@ -74,7 +74,8 @@ service cloud.firestore {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidUser(request.resource.data);
       allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
-                      request.resource.data.uid == resource.data.uid;
+                      request.resource.data.uid == resource.data.uid &&
+                      request.resource.data.subscriptionStatus == resource.data.subscriptionStatus;
     }
 
     match /posts/{postId} {
