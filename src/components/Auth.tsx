@@ -56,7 +56,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6 md:p-8 relative">
       {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.05),transparent_70%)] pointer-events-none" />
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />

@@ -19,7 +19,7 @@ export default function Layout({ children, user }: LayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col md:flex-row text-white overflow-hidden">
+    <div className="min-h-screen bg-[#050505] flex flex-col md:flex-row text-white">
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-[#0A0A0A] border-b border-white/5 sticky top-0 z-50">
         <div className="flex items-center gap-3">
@@ -37,7 +37,7 @@ export default function Layout({ children, user }: LayoutProps) {
       </header>
 
       {/* Sidebar (Desktop) */}
-      <aside className="hidden md:flex w-64 bg-[#0A0A0A] border-r border-white/5 flex-col shrink-0">
+      <aside className="hidden md:flex w-64 bg-[#0A0A0A] border-r border-white/5 flex-col shrink-0 sticky top-0 h-screen">
         <div className="p-8 flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
             <PenTool className="text-white w-6 h-6" />
@@ -84,7 +84,7 @@ export default function Layout({ children, user }: LayoutProps) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="fixed inset-0 z-40 md:hidden bg-[#050505] pt-20 px-6 flex flex-col"
+            className="fixed inset-0 z-40 md:hidden bg-[#050505] pt-20 px-6 flex flex-col overflow-y-auto"
           >
             <nav className="space-y-4 mb-12">
               {navLinks.map((link) => (
@@ -121,12 +121,12 @@ export default function Layout({ children, user }: LayoutProps) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto relative h-full">
+      <main className="flex-1 relative min-h-screen md:h-screen md:overflow-auto">
         {/* Atmospheric background elements */}
         <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-600/10 blur-[80px] md:blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-purple-600/5 blur-[70px] md:blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
         
-        <div className="max-w-5xl mx-auto p-6 md:p-12 relative z-10">
+        <div className="max-w-5xl mx-auto p-4 md:p-12 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -167,12 +167,12 @@ export default function Dashboard() {
       )}
 
       {/* Stepper */}
-      <div className="flex flex-wrap items-center gap-4 md:gap-6">
-        <StepIndicator active={step >= 1} label="Configure" icon={<Sparkles size={18} />} />
-        <div className={`hidden sm:block h-px flex-1 transition-all duration-500 ${step > 1 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
-        <StepIndicator active={step >= 2} label="Outline" icon={<List size={18} />} />
-        <div className={`hidden sm:block h-px flex-1 transition-all duration-500 ${step > 2 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
-        <StepIndicator active={step >= 3} label="Draft" icon={<FileText size={18} />} />
+      <div className="flex flex-row items-center justify-between md:justify-start gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-hide">
+        <StepIndicator active={step >= 1} label="Config" icon={<Sparkles size={16} />} />
+        <div className={`h-px flex-1 min-w-[20px] md:min-w-[40px] transition-all duration-500 ${step > 1 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <StepIndicator active={step >= 2} label="Outline" icon={<List size={16} />} />
+        <div className={`h-px flex-1 min-w-[20px] md:min-w-[40px] transition-all duration-500 ${step > 2 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <StepIndicator active={step >= 3} label="Draft" icon={<FileText size={16} />} />
       </div>
 
       <AnimatePresence mode="wait">
@@ -326,11 +326,11 @@ export default function Dashboard() {
 
 function StepIndicator({ active, label, icon }: { active: boolean; label: string; icon: React.ReactNode }) {
   return (
-    <div className={`flex items-center gap-3 transition-all duration-500 ${active ? "text-white" : "text-white/20"}`}>
-      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border transition-all duration-500 ${active ? "border-indigo-500/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "border-white/5 bg-white/5"}`}>
+    <div className={`flex items-center gap-2 md:gap-3 transition-all duration-500 ${active ? "text-white" : "text-white/20"} shrink-0`}>
+      <div className={`w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl flex items-center justify-center border transition-all duration-500 ${active ? "border-indigo-500/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "border-white/5 bg-white/5"}`}>
         {icon}
       </div>
-      <span className="text-sm font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-[10px] md:text-sm font-bold uppercase tracking-widest">{label}</span>
     </div>
   );
 }
