@@ -2,6 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import dotenv from "dotenv";
 import Stripe from "stripe";
 import admin from "firebase-admin";
@@ -11,15 +12,35 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initialize Firebase Admin
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    // If running locally, you might need a service account JSON file
-    // and set GOOGLE_APPLICATION_CREDENTIALS environment variable.
-  });
+// Load Firebase Config
+const firebaseConfigPath = path.join(process.cwd(), "firebase-applet-config.json");
+let firebaseConfig: any = {};
+if (fs.existsSync(firebaseConfigPath)) {
+  firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigPath, "utf-8"));
 }
-const db = admin.firestore();
+
+// Initialize Firebase Admin
+try {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      projectId: firebaseConfig.projectId,
+      // In this environment, applicationDefault() should work if credentials are set,
+      // otherwise it might fallback to metadata service.
+      credential: admin.credential.applicationDefault(),
+    });
+  }
+} catch (error) {
+  console.error("Firebase Admin Initialization Error:", error);
+}
+
+const getDb = () => {
+  try {
+    return admin.firestore(firebaseConfig.firestoreDatabaseId || "(default)");
+  } catch (e) {
+    console.error("Failed to get Firestore instance:", e);
+    return null;
+  }
+};
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY) 
@@ -28,9 +49,11 @@ const stripe = process.env.STRIPE_SECRET_KEY
 async function startServer() {
   const app = express();
   const PORT = 3000;
+  const db = getDb();
 
-  // Stripe Webhook needs raw body
+  // Stripe Webhook needs raw body - MUST be before express.json()
   app.post("/api/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    console.log("Webhook received");
     const sig = req.headers["stripe-signature"];
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -54,7 +77,7 @@ async function startServer() {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
         
-        if (userId) {
+        if (userId && db) {
           console.log(`Payment successful for user: ${userId}`);
           try {
             await db.collection("users").doc(userId).update({
@@ -66,12 +89,6 @@ async function startServer() {
             console.error(`Error updating user ${userId}:`, error);
           }
         }
-        break;
-      case "customer.subscription.deleted":
-        const subscription = event.data.object as Stripe.Subscription;
-        // In a real app, you'd find the user by Stripe customer ID
-        // For this demo, we'll just log it.
-        console.log(`Subscription deleted: ${subscription.id}`);
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
@@ -88,11 +105,13 @@ async function startServer() {
       status: "ok", 
       geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY),
       stripeConfigured: !!process.env.STRIPE_SECRET_KEY,
-      webhookConfigured: !!process.env.STRIPE_WEBHOOK_SECRET
+      webhookConfigured: !!process.env.STRIPE_WEBHOOK_SECRET,
+      firebaseAdminReady: !!admin.apps.length
     });
   });
 
   app.post("/api/create-checkout-session", async (req, res) => {
+    console.log("Create checkout session request received", req.body);
     if (!stripe) {
       return res.status(500).json({ error: "Stripe is not configured on the server." });
     }
@@ -100,6 +119,10 @@ async function startServer() {
     try {
       const { userId, email } = req.body;
       
+      if (!userId || !email) {
+        return res.status(400).json({ error: "Missing userId or email" });
+      }
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
@@ -134,6 +157,14 @@ async function startServer() {
     }
   });
 
+  // Global Error Handler for API routes
+  app.use("/api", (err: any, req: any, res: any, next: any) => {
+    console.error("API Error:", err);
+    res.status(err.status || 500).json({
+      error: err.message || "Internal Server Error",
+    });
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -143,10 +174,19 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+    } else {
+      console.warn("Dist folder not found. Falling back to dev mode behavior.");
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    }
   }
 
   app.listen(PORT, "0.0.0.0", () => {
@@ -154,4 +194,6 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+});
