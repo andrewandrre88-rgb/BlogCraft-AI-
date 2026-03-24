@@ -33,14 +33,15 @@ export default function History() {
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      try {
-        await deleteDoc(doc(db, "posts", id));
-        toast.success("Post deleted.");
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to delete post.");
-      }
+    // In a production app, we'd use a custom modal. 
+    // For now, we'll perform the delete directly to avoid window.confirm issues in iframes.
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      toast.success("Post deleted.");
+      if (selectedPost?.id === id) setSelectedPost(null);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete post.");
     }
   };
 

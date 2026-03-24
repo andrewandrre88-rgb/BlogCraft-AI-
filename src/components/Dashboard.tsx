@@ -45,9 +45,19 @@ export default function Dashboard() {
     fetchProfile();
   }, []);
 
-  const handleGenerateOutline = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userProfile) return;
+  const handleGenerateOutline = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    if (!userProfile) {
+      toast.error("User profile is still loading. Please wait a moment.");
+      return;
+    }
+
+    // Manual validation for mobile browsers that might not show native tooltips well
+    if (!formData.niche || !formData.audience || !formData.keyword) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
 
     // Check limits
     if (userProfile.subscriptionStatus === "free" && userProfile.postsThisMonth >= 1) {
@@ -173,7 +183,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             onSubmit={handleGenerateOutline}
-            className="glass p-10 rounded-[32px] shadow-2xl space-y-8"
+            className="glass p-6 md:p-10 rounded-[24px] md:rounded-[32px] shadow-2xl space-y-6 md:space-y-8"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-3">
@@ -227,12 +237,13 @@ export default function Dashboard() {
               </div>
             </div>
             <button
-              disabled={loading}
+              disabled={loading || !userProfile}
               type="submit"
-              className="w-full bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 group"
+              onClick={() => !loading && userProfile && handleGenerateOutline()}
+              className="w-full bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 group touch-manipulation"
             >
               {loading ? <Loader2 className="animate-spin" /> : <Sparkles className="group-hover:rotate-12 transition-transform" />}
-              Generate Outline
+              {!userProfile ? "Loading Profile..." : "Generate Outline"}
             </button>
           </motion.form>
         )}
@@ -263,7 +274,7 @@ export default function Dashboard() {
               <button
                 disabled={loading}
                 onClick={handleGenerateDraft}
-                className="w-full md:flex-[2] bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20"
+                className="w-full md:flex-[2] bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 touch-manipulation"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                 Generate Full Draft
