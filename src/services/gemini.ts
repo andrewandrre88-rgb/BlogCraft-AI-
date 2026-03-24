@@ -1,15 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+
 export async function generateOutline(niche: string, audience: string, keyword: string) {
   try {
-    const response = await fetch("/api/ai/outline", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ niche, audience, keyword }),
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `Generate a detailed blog post outline for a blog in the ${niche} niche, targeting ${audience}. The main keyword is "${keyword}". Use Markdown format.`,
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Failed to generate outline");
-    return data.text;
+    return response.text;
   } catch (error: any) {
     console.error("Gemini Outline Error:", error);
     throw error;
@@ -18,14 +17,21 @@ export async function generateOutline(niche: string, audience: string, keyword: 
 
 export async function generateDraft(niche: string, audience: string, keyword: string, length: string, outline: string) {
   try {
-    const response = await fetch("/api/ai/draft", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ niche, audience, keyword, length, outline }),
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `Write a full blog post based on the following outline:
+      
+      Outline:
+      ${outline}
+      
+      Niche: ${niche}
+      Audience: ${audience}
+      Keyword: ${keyword}
+      Target Length: ${length}
+      
+      Format the output in Markdown. Ensure it is engaging and SEO-friendly.`,
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Failed to generate draft");
-    return data.text;
+    return response.text;
   } catch (error: any) {
     console.error("Gemini Draft Error:", error);
     throw error;

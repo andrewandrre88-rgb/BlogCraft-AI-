@@ -3,7 +3,6 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
@@ -22,50 +21,6 @@ async function startServer() {
       status: "ok", 
       geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY)
     });
-  });
-
-  app.post("/api/ai/outline", async (req, res) => {
-    try {
-      const { niche, audience, keyword } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY or API_KEY not set on server. Please check your environment variables in Settings.");
-      
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Generate a detailed blog post outline for a blog in the ${niche} niche, targeting ${audience}. The main keyword is "${keyword}". Use Markdown format.`,
-      });
-      res.json({ text: response.text });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  app.post("/api/ai/draft", async (req, res) => {
-    try {
-      const { niche, audience, keyword, length, outline } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY or API_KEY not set on server. Please check your environment variables in Settings.");
-
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Write a full blog post based on the following outline:
-        
-        Outline:
-        ${outline}
-        
-        Niche: ${niche}
-        Audience: ${audience}
-        Keyword: ${keyword}
-        Target Length: ${length}
-        
-        Format the output in Markdown. Ensure it is engaging and SEO-friendly.`,
-      });
-      res.json({ text: response.text });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
   });
 
   // Vite middleware for development
