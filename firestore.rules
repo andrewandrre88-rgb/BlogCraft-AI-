@@ -1,25 +1,23 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
     // ===============================================================
     // Assumed Data Model
     // ===============================================================
     //
     // Collection: users
-    // Document ID: userId (matches auth.uid)
+    // Document ID: {userId}
     // Fields:
     //   - uid: string (required)
     //   - email: string (required, email format)
-    //   - subscriptionStatus: string (required, 'free' or 'pro')
+    //   - subscriptionStatus: string (required, enum: ['free', 'pro'])
     //   - postsThisMonth: number (required)
     //   - lastPostDate: timestamp (optional)
-    //   - stripeCustomerId: string (optional)
     //
     // Collection: posts
-    // Document ID: postId
+    // Document ID: {postId}
     // Fields:
-    //   - uid: string (required, matches author)
+    //   - uid: string (required)
     //   - title: string (required)
     //   - niche: string (optional)
     //   - audience: string (optional)
@@ -31,7 +29,10 @@ service cloud.firestore {
     //
     // ===============================================================
 
+    // ===============================================================
     // Helper Functions
+    // ===============================================================
+    
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -48,38 +49,39 @@ service cloud.firestore {
       return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
-    // Domain Validators
     function isValidUser(data) {
       return data.keys().hasAll(['uid', 'email', 'subscriptionStatus', 'postsThisMonth']) &&
              data.uid == request.auth.uid &&
              isValidEmail(data.email) &&
              data.subscriptionStatus in ['free', 'pro'] &&
              data.postsThisMonth is number &&
-             data.keys().hasOnly(['uid', 'email', 'subscriptionStatus', 'postsThisMonth', 'lastPostDate', 'stripeCustomerId']);
+             data.postsThisMonth >= 0;
     }
 
     function isValidPost(data) {
       return data.keys().hasAll(['uid', 'title', 'draft', 'createdAt']) &&
              data.uid == request.auth.uid &&
-             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 500 &&
              data.draft is string && data.draft.size() > 0 &&
-             data.createdAt is timestamp &&
-             data.keys().hasOnly(['uid', 'title', 'niche', 'audience', 'keyword', 'length', 'outline', 'draft', 'createdAt']);
+             data.createdAt is timestamp;
     }
 
+    // ===============================================================
     // Rules
+    // ===============================================================
+
     match /users/{userId} {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidUser(request.resource.data);
       allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
-                    request.resource.data.uid == resource.data.uid;
+                      request.resource.data.uid == resource.data.uid;
     }
 
     match /posts/{postId} {
       allow read: if isDocOwner();
       allow create: if isAuthenticated() && isValidPost(request.resource.data);
       allow update: if isDocOwner() && isValidPost(request.resource.data) &&
-                    request.resource.data.uid == resource.data.uid;
+                      request.resource.data.uid == resource.data.uid;
       allow delete: if isDocOwner();
     }
   }

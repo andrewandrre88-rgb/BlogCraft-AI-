@@ -28,7 +28,13 @@ export default function Auth() {
       toast.success("Signed in successfully!");
     } catch (error: any) {
       console.error("Auth Error:", error);
-      toast.error("Failed to sign in. Please try again.");
+      if (error.code === "auth/popup-blocked") {
+        toast.error("Sign-in popup was blocked. Please allow popups for this site.");
+      } else if (error.code === "auth/unauthorized-domain") {
+        toast.error("This domain is not authorized for Google Sign-in. Please check your Firebase console.");
+      } else {
+        toast.error(`Failed to sign in: ${error.message || "Please try again."}`);
+      }
     }
   };
 

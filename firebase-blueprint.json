@@ -5,29 +5,28 @@
       "description": "User profile and subscription data.",
       "type": "object",
       "properties": {
-        "uid": { "type": "string" },
-        "email": { "type": "string", "format": "email" },
-        "subscriptionStatus": { "type": "string", "enum": ["free", "pro"] },
-        "postsThisMonth": { "type": "integer" },
-        "lastPostDate": { "type": "string", "format": "date-time" },
-        "stripeCustomerId": { "type": "string" }
+        "uid": { "type": "string", "description": "Unique user ID from Firebase Auth." },
+        "email": { "type": "string", "format": "email", "description": "User's email address." },
+        "subscriptionStatus": { "type": "string", "enum": ["free", "pro"], "description": "Current subscription tier." },
+        "postsThisMonth": { "type": "integer", "description": "Number of posts generated in the current billing cycle." },
+        "lastPostDate": { "type": "string", "format": "date-time", "description": "Timestamp of the last post generated." }
       },
       "required": ["uid", "email", "subscriptionStatus", "postsThisMonth"]
     },
-    "BlogPost": {
-      "title": "BlogPost",
-      "description": "Generated blog post draft.",
+    "Post": {
+      "title": "Post",
+      "description": "A generated blog post.",
       "type": "object",
       "properties": {
-        "uid": { "type": "string" },
-        "title": { "type": "string" },
-        "niche": { "type": "string" },
-        "audience": { "type": "string" },
-        "keyword": { "type": "string" },
-        "length": { "type": "string" },
-        "outline": { "type": "string" },
-        "draft": { "type": "string" },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "uid": { "type": "string", "description": "ID of the user who owns this post." },
+        "title": { "type": "string", "description": "Title of the blog post." },
+        "niche": { "type": "string", "description": "The website niche." },
+        "audience": { "type": "string", "description": "The target audience." },
+        "keyword": { "type": "string", "description": "The primary keyword." },
+        "length": { "type": "string", "description": "The target length." },
+        "outline": { "type": "string", "description": "The generated outline in Markdown." },
+        "draft": { "type": "string", "description": "The generated full draft in Markdown." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the post was created." }
       },
       "required": ["uid", "title", "draft", "createdAt"]
     }
@@ -35,11 +34,11 @@
   "firestore": {
     "/users/{userId}": {
       "schema": "User",
-      "description": "User profile data."
+      "description": "User profile documents."
     },
     "/posts/{postId}": {
-      "schema": "BlogPost",
-      "description": "Generated blog posts."
+      "schema": "Post",
+      "description": "Collection of generated blog posts."
     }
   }
 }
