@@ -147,7 +147,7 @@ export default function Dashboard() {
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg">Gemini API Key Missing</h3>
-            <p className="text-sm opacity-70">The server is not configured with an API key. Please set <strong>GEMINI_API_KEY</strong> in your environment variables.</p>
+            <p className="text-sm opacity-70">The server is not configured with an API key. Please set <strong>GEMINI_API_KEY</strong> (or <strong>API_KEY</strong>) in your environment variables.</p>
             {availableKeys.length > 0 && (
               <div className="mt-2 text-[10px] font-mono opacity-40">
                 Detected keys: {availableKeys.join(", ")}

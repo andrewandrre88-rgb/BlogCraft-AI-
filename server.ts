@@ -21,16 +21,16 @@ async function startServer() {
     const envKeys = Object.keys(process.env);
     res.json({ 
       status: "ok", 
-      geminiConfigured: !!process.env.GEMINI_API_KEY,
-      availableKeys: envKeys.filter(key => !key.includes("SECRET") && !key.includes("KEY") || key === "GEMINI_API_KEY")
+      geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY),
+      availableKeys: envKeys.filter(key => !key.includes("SECRET") && !key.includes("KEY") || key === "GEMINI_API_KEY" || key === "API_KEY")
     });
   });
 
   app.post("/api/ai/outline", async (req, res) => {
     try {
       const { niche, audience, keyword } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY not set on server");
+      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+      if (!apiKey) throw new Error("GEMINI_API_KEY or API_KEY not set on server. Please check your environment variables in Settings.");
       
       const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
@@ -46,8 +46,8 @@ async function startServer() {
   app.post("/api/ai/draft", async (req, res) => {
     try {
       const { niche, audience, keyword, length, outline } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY not set on server");
+      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+      if (!apiKey) throw new Error("GEMINI_API_KEY or API_KEY not set on server. Please check your environment variables in Settings.");
 
       const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
