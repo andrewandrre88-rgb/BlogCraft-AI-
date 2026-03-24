@@ -26,6 +26,9 @@ export default function History() {
         ...doc.data(),
       }));
       setPosts(postsData);
+    }, (error) => {
+      console.error("History fetch error:", error);
+      toast.error("Failed to load history. If this is your first time, an index might be building.");
     });
 
     return () => unsubscribe();

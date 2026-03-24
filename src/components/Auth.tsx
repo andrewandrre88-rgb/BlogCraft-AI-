@@ -94,11 +94,15 @@ export default function Auth() {
           </button>
 
           {isIframe && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 justify-center text-indigo-400/80 text-xs font-medium bg-indigo-400/5 py-3 px-4 rounded-xl border border-indigo-400/10">
-                <Info size={14} />
-                <span>For the best experience in Chrome, open in a new tab</span>
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center gap-3 justify-center text-indigo-400 text-sm font-medium bg-indigo-400/10 py-4 px-6 rounded-2xl border border-indigo-400/20">
+                <Info size={18} className="shrink-0" />
+                <p className="text-left leading-snug">
+                  Browser restrictions may block sign-in within this frame. 
+                  <span className="block text-indigo-300/80 text-xs mt-1">Please use the button below for a seamless experience.</span>
+                </p>
               </div>
+              
               <a
                 href={window.location.href}
                 target="_blank"

@@ -16,8 +16,11 @@ export default function Pricing() {
         const res = await fetch("/api/health");
         const data = await res.json();
         setStripeReady(data.stripeConfigured);
+        if (data.firestore !== "connected") {
+          console.warn("Firestore connectivity issue in Pricing:", data.firestore);
+        }
       } catch (e) {
-        console.error("Health check failed:", e);
+        console.error("Health check failed in Pricing:", e);
       }
     };
     checkHealth();
@@ -25,6 +28,8 @@ export default function Pricing() {
     if (!auth.currentUser) return;
     const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
       setUserProfile(doc.data());
+    }, (error) => {
+      console.error("Profile fetch error in Pricing:", error);
     });
     return () => unsubscribe();
   }, []);

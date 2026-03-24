@@ -131,9 +131,22 @@ async function startServer() {
   };
 
   // API Routes
-  app.get("/api/health", (req, res) => {
+  app.get("/api/health", async (req, res) => {
+    let firestoreStatus = "not_initialized";
+    if (db) {
+      try {
+        // Simple test to see if we can reach Firestore
+        await db.collection("_health").doc("check").set({ lastCheck: admin.firestore.FieldValue.serverTimestamp() });
+        firestoreStatus = "connected";
+      } catch (e: any) {
+        console.error("Firestore Health Check Failed:", e);
+        firestoreStatus = `error: ${e.message}`;
+      }
+    }
+
     res.json({ 
       status: "ok", 
+      firestore: firestoreStatus,
       geminiConfigured: !!(process.env.GEMINI_API_KEY || process.env.API_KEY),
       stripeConfigured: !!process.env.STRIPE_SECRET_KEY,
       webhookConfigured: !!process.env.STRIPE_WEBHOOK_SECRET,

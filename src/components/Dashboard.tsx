@@ -27,6 +27,10 @@ export default function Dashboard() {
         const res = await fetch("/api/health");
         const data = await res.json();
         setIsAiReady(data.geminiConfigured);
+        if (data.firestore !== "connected") {
+          console.warn("Firestore connectivity issue:", data.firestore);
+          toast.error("Database connection issue. Please check your Firebase settings.");
+        }
       } catch (e) {
         console.error("Health check failed:", e);
       }
@@ -44,9 +48,26 @@ export default function Dashboard() {
     const fetchProfile = async () => {
       if (auth.currentUser) {
         const userRef = doc(db, "users", auth.currentUser.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUserProfile(userSnap.data());
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setUserProfile(userSnap.data());
+          } else {
+            // Create profile if it doesn't exist (e.g., if Auth.tsx failed or was skipped)
+            const newProfile = {
+              uid: auth.currentUser.uid,
+              email: auth.currentUser.email,
+              subscriptionStatus: "free",
+              postsThisMonth: 0,
+              lastPostDate: null,
+            };
+            await setDoc(userRef, newProfile);
+            setUserProfile(newProfile);
+            console.log("Created missing user profile in Dashboard");
+          }
+        } catch (error) {
+          console.error("Error fetching/creating profile:", error);
+          toast.error("Failed to load user profile. Please check your connection.");
         }
       }
     };
