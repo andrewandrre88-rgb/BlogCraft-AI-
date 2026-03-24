@@ -52,10 +52,10 @@ export default function History() {
 
   return (
     <div className="space-y-8 md:space-y-12">
-      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-serif tracking-tight text-white mb-2">History</h1>
-          <p className="text-white/40 text-base md:text-lg font-light">Your collection of AI-crafted stories.</p>
+          <h1 className="text-3xl md:text-5xl font-serif tracking-tight text-white mb-2">History</h1>
+          <p className="text-white/40 text-sm md:text-lg font-light">Your collection of AI-crafted stories.</p>
         </div>
         <div className="relative w-full md:w-80">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 w-5 h-5" />

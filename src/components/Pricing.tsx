@@ -70,8 +70,8 @@ export default function Pricing() {
   return (
     <div className="space-y-12 md:space-y-16">
       <header className="text-center max-w-3xl mx-auto px-4">
-        <h1 className="text-4xl md:text-6xl font-serif tracking-tight text-white mb-6 leading-tight">Simple, Transparent Pricing</h1>
-        <p className="text-lg md:text-xl text-white/40 font-light leading-relaxed">
+        <h1 className="text-3xl md:text-6xl font-serif tracking-tight text-white mb-4 md:mb-6 leading-tight">Simple, Transparent Pricing</h1>
+        <p className="text-base md:text-xl text-white/40 font-light leading-relaxed">
           Unlock unlimited blog posts and advanced SEO features with our Pro plan. Designed for serious content creators.
         </p>
       </header>

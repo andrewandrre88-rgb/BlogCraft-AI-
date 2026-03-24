@@ -127,10 +127,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8 md:space-y-12">
-      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-serif tracking-tight text-white mb-2">Post Generator</h1>
-          <p className="text-white/40 text-base md:text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
+          <h1 className="text-3xl md:text-5xl font-serif tracking-tight text-white mb-2">Post Generator</h1>
+          <p className="text-white/40 text-sm md:text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
         </div>
         <div className="glass px-4 md:px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl w-full md:w-auto justify-center md:justify-start">
           <div className={`w-2.5 h-2.5 rounded-full ${userProfile?.subscriptionStatus === 'pro' ? 'bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]'}`} />
@@ -185,7 +185,7 @@ export default function Dashboard() {
             onSubmit={handleGenerateOutline}
             className="glass p-6 md:p-10 rounded-[24px] md:rounded-[32px] shadow-2xl space-y-6 md:space-y-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <div className="space-y-3">
                 <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Website Niche</label>
                 <input
@@ -326,11 +326,11 @@ export default function Dashboard() {
 
 function StepIndicator({ active, label, icon }: { active: boolean; label: string; icon: React.ReactNode }) {
   return (
-    <div className={`flex items-center gap-2 md:gap-3 transition-all duration-500 ${active ? "text-white" : "text-white/20"} shrink-0`}>
-      <div className={`w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl flex items-center justify-center border transition-all duration-500 ${active ? "border-indigo-500/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "border-white/5 bg-white/5"}`}>
-        {icon}
+    <div className={`flex items-center gap-1.5 md:gap-3 transition-all duration-500 ${active ? "text-white" : "text-white/20"} shrink-0`}>
+      <div className={`w-7 h-7 md:w-10 md:h-10 rounded-lg md:rounded-2xl flex items-center justify-center border transition-all duration-500 ${active ? "border-indigo-500/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "border-white/5 bg-white/5"}`}>
+        {React.cloneElement(icon as any, { size: 14 })}
       </div>
-      <span className="text-[10px] md:text-sm font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-[9px] md:text-sm font-bold uppercase tracking-wider md:tracking-widest">{label}</span>
     </div>
   );
 }

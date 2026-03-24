@@ -121,12 +121,12 @@ export default function Layout({ children, user }: LayoutProps) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 relative min-h-screen md:h-screen md:overflow-auto">
+      <main className="flex-1 relative min-h-screen md:h-screen md:overflow-auto w-full">
         {/* Atmospheric background elements */}
         <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-600/10 blur-[80px] md:blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-purple-600/5 blur-[70px] md:blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
         
-        <div className="max-w-5xl mx-auto p-4 md:p-12 relative z-10">
+        <div className="w-full max-w-5xl mx-auto p-3 md:p-12 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
