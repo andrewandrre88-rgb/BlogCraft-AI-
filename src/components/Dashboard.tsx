@@ -19,8 +19,20 @@ export default function Dashboard() {
   const [outline, setOutline] = useState("");
   const [draft, setDraft] = useState("");
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [isAiReady, setIsAiReady] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        setIsAiReady(data.geminiConfigured);
+      } catch (e) {
+        console.error("Health check failed:", e);
+      }
+    };
+    checkHealth();
+
     const fetchProfile = async () => {
       if (auth.currentUser) {
         const userRef = doc(db, "users", auth.currentUser.uid);
@@ -121,6 +133,28 @@ export default function Dashboard() {
           </span>
         </div>
       </header>
+
+      {isAiReady === false && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-red-500/10 border border-red-500/20 p-6 rounded-[24px] flex items-center gap-4 text-red-200"
+        >
+          <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+            <Sparkles className="text-red-400" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-lg">Gemini API Key Missing</h3>
+            <p className="text-sm opacity-70">The server is not configured with an API key. Please set <strong>GEMINI_API_KEY</strong> in your environment variables.</p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors"
+          >
+            Check Again
+          </button>
+        </motion.div>
+      )}
 
       {/* Stepper */}
       <div className="flex items-center gap-6">

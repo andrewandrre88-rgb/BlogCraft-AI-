@@ -17,6 +17,13 @@ async function startServer() {
   app.use(express.json());
 
   // API Routes
+  app.get("/api/health", (req, res) => {
+    res.json({ 
+      status: "ok", 
+      geminiConfigured: !!process.env.GEMINI_API_KEY 
+    });
+  });
+
   app.post("/api/ai/outline", async (req, res) => {
     try {
       const { niche, audience, keyword } = req.body;
