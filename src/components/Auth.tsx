@@ -1,20 +1,23 @@
 import { auth, db } from "../firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { PenTool, Chrome, ExternalLink, AlertCircle } from "lucide-react";
+import { PenTool, Chrome, ExternalLink, AlertCircle, Info } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
 export default function Auth() {
   const [isIframe, setIsIframe] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsIframe(window.self !== window.top);
   }, []);
 
   const handleSignIn = async () => {
+    setAuthError(null);
     try {
+      await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -35,15 +38,20 @@ export default function Auth() {
       toast.success("Signed in successfully!");
     } catch (error: any) {
       console.error("Auth Error:", error);
+      let message = "Failed to sign in. Please try again.";
+      
       if (error.code === "auth/popup-blocked") {
-        toast.error("Sign-in popup was blocked. Please allow popups for this site.");
+        message = "Sign-in popup was blocked. Please allow popups for this site.";
       } else if (error.code === "auth/unauthorized-domain") {
-        toast.error("This domain is not authorized for Google Sign-in. Please check your Firebase console.");
+        message = "This domain is not authorized for Google Sign-in. Please check your Firebase console.";
       } else if (error.code === "auth/internal-error" || error.message?.includes("cross-origin")) {
-        toast.error("Mobile browser restriction detected. Please use the 'Open in New Tab' button below.");
-      } else {
-        toast.error(`Failed to sign in: ${error.message || "Please try again."}`);
+        message = "Browser restriction detected. Please use the 'Open in New Tab' button below.";
+      } else if (error.code === "auth/popup-closed-by-user") {
+        message = "Sign-in window was closed before completion.";
       }
+      
+      setAuthError(message);
+      toast.error(message);
     }
   };
 
@@ -70,6 +78,13 @@ export default function Auth() {
         </p>
 
         <div className="space-y-4 px-4 md:px-0">
+          {authError && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm flex items-start gap-3 mb-6">
+              <AlertCircle className="shrink-0 mt-0.5" size={16} />
+              <p className="text-left">{authError}</p>
+            </div>
+          )}
+
           <button
             onClick={handleSignIn}
             className="w-full flex items-center justify-center gap-4 bg-white text-black px-6 md:px-8 py-4 md:py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
@@ -80,9 +95,9 @@ export default function Auth() {
 
           {isIframe && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 justify-center text-amber-400/80 text-xs font-medium bg-amber-400/5 py-3 px-4 rounded-xl border border-amber-400/10">
-                <AlertCircle size={14} />
-                <span>Mobile login may be blocked in this view</span>
+              <div className="flex items-center gap-2 justify-center text-indigo-400/80 text-xs font-medium bg-indigo-400/5 py-3 px-4 rounded-xl border border-indigo-400/10">
+                <Info size={14} />
+                <span>For the best experience in Chrome, open in a new tab</span>
               </div>
               <a
                 href={window.location.href}

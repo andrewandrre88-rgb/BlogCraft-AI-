@@ -181,6 +181,7 @@ export default function Dashboard() {
                 <input
                   required
                   type="text"
+                  autoComplete="off"
                   placeholder="e.g. Sustainable Living"
                   className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.niche}
@@ -192,6 +193,7 @@ export default function Dashboard() {
                 <input
                   required
                   type="text"
+                  autoComplete="off"
                   placeholder="e.g. Eco-conscious millennials"
                   className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.audience}
@@ -203,6 +205,7 @@ export default function Dashboard() {
                 <input
                   required
                   type="text"
+                  autoComplete="off"
                   placeholder="e.g. zero waste kitchen tips"
                   className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.keyword}

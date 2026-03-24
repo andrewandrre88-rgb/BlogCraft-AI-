@@ -46,8 +46,8 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <Loader2 className="animate-spin text-black w-8 h-8" />
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+        <Loader2 className="animate-spin text-indigo-500 w-8 h-8" />
       </div>
     );
   }
