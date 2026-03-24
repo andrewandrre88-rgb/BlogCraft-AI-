@@ -76,15 +76,16 @@ async function startServer() {
       case "checkout.session.completed":
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
+        const plan = session.metadata?.plan || "pro";
         
         if (userId && db) {
-          console.log(`Payment successful for user: ${userId}`);
+          console.log(`Payment successful for user: ${userId}, plan: ${plan}`);
           try {
             await db.collection("users").doc(userId).update({
-              subscriptionStatus: "pro",
+              subscriptionStatus: plan,
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
-            console.log(`User ${userId} upgraded to Pro.`);
+            console.log(`User ${userId} upgraded to ${plan}.`);
           } catch (error) {
             console.error(`Error updating user ${userId}:`, error);
           }
@@ -117,11 +118,26 @@ async function startServer() {
     }
 
     try {
-      const { userId, email } = req.body;
+      const { userId, email, plan } = req.body;
       
       if (!userId || !email) {
         return res.status(400).json({ error: "Missing userId or email" });
       }
+
+      const planConfig: any = {
+        pro: {
+          name: "BlogCraft Pro Subscription",
+          amount: 2900,
+          description: "Unlimited blog posts and advanced SEO features",
+        },
+        agency: {
+          name: "BlogCraft Agency Subscription",
+          amount: 9900,
+          description: "Multi-user access, API, and white-label reports",
+        }
+      };
+
+      const selectedPlan = planConfig[plan] || planConfig.pro;
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -130,10 +146,10 @@ async function startServer() {
             price_data: {
               currency: "usd",
               product_data: {
-                name: "BlogCraft Pro Subscription",
-                description: "Unlimited blog posts and advanced SEO features",
+                name: selectedPlan.name,
+                description: selectedPlan.description,
               },
-              unit_amount: 2900, // $29.00
+              unit_amount: selectedPlan.amount,
               recurring: {
                 interval: "month",
               },
@@ -147,6 +163,7 @@ async function startServer() {
         customer_email: email,
         metadata: {
           userId: userId,
+          plan: plan || "pro",
         },
       });
 

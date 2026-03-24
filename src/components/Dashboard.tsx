@@ -133,13 +133,13 @@ export default function Dashboard() {
           <p className="text-white/40 text-sm md:text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
         </div>
         <div className="glass px-4 md:px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl w-full md:w-auto justify-center md:justify-start">
-          <div className={`w-2.5 h-2.5 rounded-full ${userProfile?.subscriptionStatus === 'pro' ? 'bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]'}`} />
+          <div className={`w-2.5 h-2.5 rounded-full ${userProfile?.subscriptionStatus === 'pro' || userProfile?.subscriptionStatus === 'agency' ? 'bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]'}`} />
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
             {userProfile?.subscriptionStatus || 'Free'} Plan
           </span>
           <div className="w-px h-4 bg-white/10 mx-1" />
           <span className="text-xs font-mono text-white/40">
-            {userProfile?.postsThisMonth || 0} / {userProfile?.subscriptionStatus === 'pro' ? '∞' : '1'}
+            {userProfile?.subscriptionStatus === 'pro' || userProfile?.subscriptionStatus === 'agency' ? '∞' : `${userProfile?.postsThisMonth || 0} / 1`}
           </span>
         </div>
       </header>
