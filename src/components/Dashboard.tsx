@@ -116,13 +116,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-12">
-      <header className="flex items-end justify-between">
+    <div className="space-y-8 md:space-y-12">
+      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-5xl font-serif tracking-tight text-white mb-2">Post Generator</h1>
-          <p className="text-white/40 text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
+          <h1 className="text-4xl md:text-5xl font-serif tracking-tight text-white mb-2">Post Generator</h1>
+          <p className="text-white/40 text-base md:text-lg font-light">Craft your next masterpiece with artificial intelligence.</p>
         </div>
-        <div className="glass px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
+        <div className="glass px-4 md:px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl w-full md:w-auto justify-center md:justify-start">
           <div className={`w-2.5 h-2.5 rounded-full ${userProfile?.subscriptionStatus === 'pro' ? 'bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]' : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]'}`} />
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
             {userProfile?.subscriptionStatus || 'Free'} Plan
@@ -157,11 +157,11 @@ export default function Dashboard() {
       )}
 
       {/* Stepper */}
-      <div className="flex items-center gap-6">
+      <div className="flex flex-wrap items-center gap-4 md:gap-6">
         <StepIndicator active={step >= 1} label="Configure" icon={<Sparkles size={18} />} />
-        <div className={`h-px flex-1 transition-all duration-500 ${step > 1 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <div className={`hidden sm:block h-px flex-1 transition-all duration-500 ${step > 1 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
         <StepIndicator active={step >= 2} label="Outline" icon={<List size={18} />} />
-        <div className={`h-px flex-1 transition-all duration-500 ${step > 2 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
+        <div className={`hidden sm:block h-px flex-1 transition-all duration-500 ${step > 2 ? 'bg-indigo-500/50' : 'bg-white/5'}`} />
         <StepIndicator active={step >= 3} label="Draft" icon={<FileText size={18} />} />
       </div>
 
@@ -175,14 +175,14 @@ export default function Dashboard() {
             onSubmit={handleGenerateOutline}
             className="glass p-10 rounded-[32px] shadow-2xl space-y-8"
           >
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-3">
                 <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Website Niche</label>
                 <input
                   required
                   type="text"
                   placeholder="e.g. Sustainable Living"
-                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
+                  className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.niche}
                   onChange={(e) => setFormData({ ...formData, niche: e.target.value })}
                 />
@@ -193,7 +193,7 @@ export default function Dashboard() {
                   required
                   type="text"
                   placeholder="e.g. Eco-conscious millennials"
-                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
+                  className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.audience}
                   onChange={(e) => setFormData({ ...formData, audience: e.target.value })}
                 />
@@ -204,7 +204,7 @@ export default function Dashboard() {
                   required
                   type="text"
                   placeholder="e.g. zero waste kitchen tips"
-                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
+                  className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20"
                   value={formData.keyword}
                   onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
                 />
@@ -212,7 +212,7 @@ export default function Dashboard() {
               <div className="space-y-3">
                 <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Target Length</label>
                 <select
-                  className="w-full bg-white/5 px-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white appearance-none cursor-pointer"
+                  className="w-full bg-white/5 px-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white appearance-none cursor-pointer"
                   value={formData.length}
                   onChange={(e) => setFormData({ ...formData, length: e.target.value })}
                 >
@@ -226,7 +226,7 @@ export default function Dashboard() {
             <button
               disabled={loading}
               type="submit"
-              className="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 group"
+              className="w-full bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20 group"
             >
               {loading ? <Loader2 className="animate-spin" /> : <Sparkles className="group-hover:rotate-12 transition-transform" />}
               Generate Outline
@@ -242,25 +242,25 @@ export default function Dashboard() {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <div className="glass p-10 rounded-[32px] shadow-2xl">
-              <h2 className="text-2xl font-serif mb-8 flex items-center gap-3">
+            <div className="glass p-6 md:p-10 rounded-[24px] md:rounded-[32px] shadow-2xl">
+              <h2 className="text-xl md:text-2xl font-serif mb-6 md:mb-8 flex items-center gap-3">
                 <List className="text-indigo-400" /> Proposed Outline
               </h2>
-              <div className="prose-premium">
+              <div className="prose-premium text-sm md:text-base">
                 <ReactMarkdown>{outline}</ReactMarkdown>
               </div>
             </div>
-            <div className="flex gap-6">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 glass text-white/60 py-5 rounded-2xl font-bold hover:text-white hover:bg-white/5 transition-all"
+                className="w-full md:flex-1 glass text-white/60 py-4 md:py-5 rounded-2xl font-bold hover:text-white hover:bg-white/5 transition-all"
               >
                 Back to Config
               </button>
               <button
                 disabled={loading}
                 onClick={handleGenerateDraft}
-                className="flex-[2] bg-indigo-600 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20"
+                className="w-full md:flex-[2] bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-500 transition-all disabled:opacity-50 shadow-xl shadow-indigo-600/20"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                 Generate Full Draft
@@ -276,19 +276,19 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-8"
           >
-            <div className="glass p-10 rounded-[32px] shadow-2xl">
-              <div className="flex items-center justify-between mb-10">
-                <h2 className="text-2xl font-serif flex items-center gap-3">
+            <div className="glass p-6 md:p-10 rounded-[24px] md:rounded-[32px] shadow-2xl">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 gap-4">
+                <h2 className="text-xl md:text-2xl font-serif flex items-center gap-3">
                   <CheckCircle2 className="text-emerald-400" /> Full Draft Ready
                 </h2>
                 <button
                   onClick={() => window.location.href = '/history'}
-                  className="text-sm font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="text-xs md:text-sm font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   View in History
                 </button>
               </div>
-              <div className="prose-premium">
+              <div className="prose-premium text-sm md:text-base">
                 <ReactMarkdown>{draft}</ReactMarkdown>
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function Dashboard() {
                 setDraft("");
                 setFormData({ niche: "", audience: "", keyword: "", length: "1000 words" });
               }}
-              className="w-full bg-white text-black py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-xl shadow-white/10"
+              className="w-full bg-white text-black py-4 md:py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-xl shadow-white/10"
             >
               Start New Post
             </button>

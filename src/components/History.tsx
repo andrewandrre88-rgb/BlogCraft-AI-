@@ -50,27 +50,27 @@ export default function History() {
   );
 
   return (
-    <div className="space-y-12">
-      <header className="flex items-end justify-between">
+    <div className="space-y-8 md:space-y-12">
+      <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-5xl font-serif tracking-tight text-white mb-2">History</h1>
-          <p className="text-white/40 text-lg font-light">Your collection of AI-crafted stories.</p>
+          <h1 className="text-4xl md:text-5xl font-serif tracking-tight text-white mb-2">History</h1>
+          <p className="text-white/40 text-base md:text-lg font-light">Your collection of AI-crafted stories.</p>
         </div>
-        <div className="relative w-80">
+        <div className="relative w-full md:w-80">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 w-5 h-5" />
           <input
             type="text"
             placeholder="Search your archives..."
-            className="w-full bg-white/5 pl-12 pr-5 py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20 text-sm"
+            className="w-full bg-white/5 pl-12 pr-5 py-3.5 md:py-4 rounded-2xl border border-white/5 focus:border-indigo-500/50 focus:bg-white/10 focus:ring-0 transition-all outline-none text-white placeholder:text-white/20 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
         {/* List */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className={`lg:col-span-1 space-y-4 ${selectedPost ? 'hidden lg:block' : 'block'}`}>
           {filteredPosts.length === 0 ? (
             <div className="glass p-10 rounded-[32px] border border-dashed border-white/10 text-center">
               <p className="text-white/20 text-sm font-medium">No archives found.</p>
@@ -108,7 +108,7 @@ export default function History() {
         </div>
 
         {/* Preview */}
-        <div className="lg:col-span-2">
+        <div className={`lg:col-span-2 ${!selectedPost ? 'hidden lg:block' : 'block'}`}>
           <AnimatePresence mode="wait">
             {selectedPost ? (
               <motion.div
@@ -116,38 +116,45 @@ export default function History() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="glass p-12 rounded-[40px] shadow-2xl"
+                className="glass p-6 md:p-12 rounded-[24px] md:rounded-[40px] shadow-2xl"
               >
-                <div className="flex items-start justify-between mb-12 pb-8 border-b border-white/5">
-                  <div>
-                    <h2 className="text-4xl font-serif text-white mb-4 leading-tight">{selectedPost.title}</h2>
-                    <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col md:flex-row items-start justify-between mb-8 md:mb-12 pb-8 border-b border-white/5 gap-6">
+                  <div className="w-full">
+                    <button 
+                      onClick={() => setSelectedPost(null)}
+                      className="lg:hidden mb-6 text-indigo-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2"
+                    >
+                      ← Back to list
+                    </button>
+                    <h2 className="text-2xl md:text-4xl font-serif text-white mb-4 leading-tight">{selectedPost.title}</h2>
+                    <div className="flex flex-wrap gap-2 md:gap-3">
                       <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.niche}</span>
                       <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.audience}</span>
                       <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">{selectedPost.length}</span>
                     </div>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 w-full md:w-auto">
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(selectedPost.draft);
                         toast.success("Copied to clipboard!");
                       }}
-                      className="p-4 rounded-2xl glass hover:bg-white/10 transition-all text-white/60 hover:text-white shadow-xl"
+                      className="flex-1 md:flex-none p-4 rounded-2xl glass hover:bg-white/10 transition-all text-white/60 hover:text-white shadow-xl flex items-center justify-center gap-2"
                       title="Copy Draft"
                     >
                       <FileText size={20} />
+                      <span className="md:hidden text-xs font-bold uppercase tracking-widest">Copy Draft</span>
                     </button>
                   </div>
                 </div>
-                <div className="prose-premium">
+                <div className="prose-premium text-sm md:text-base">
                   <ReactMarkdown>{selectedPost.draft}</ReactMarkdown>
                 </div>
               </motion.div>
             ) : (
-              <div className="h-full min-h-[500px] glass rounded-[40px] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10">
-                <FileText size={64} className="mb-6 opacity-5" />
-                <p className="text-lg font-light tracking-wide">Select a post to preview its content</p>
+              <div className="h-full min-h-[300px] md:min-h-[500px] glass rounded-[24px] md:rounded-[40px] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10 p-8 text-center">
+                <FileText className="w-12 md:w-16 h-12 md:h-16 mb-6 opacity-5" />
+                <p className="text-base md:text-lg font-light tracking-wide">Select a post to preview its content</p>
               </div>
             )}
           </AnimatePresence>

@@ -64,18 +64,18 @@ export default function Auth() {
           <PenTool className="text-white w-10 h-10" />
         </div>
         
-        <h1 className="text-7xl font-serif italic tracking-tight text-white mb-6">BlogCraft AI</h1>
-        <p className="text-xl text-white/40 font-light mb-16 max-w-md mx-auto leading-relaxed">
+        <h1 className="text-5xl md:text-7xl font-serif italic tracking-tight text-white mb-6">BlogCraft AI</h1>
+        <p className="text-lg md:text-xl text-white/40 font-light mb-12 md:mb-16 max-w-md mx-auto leading-relaxed px-4">
           The ultimate companion for modern storytellers. Craft high-quality, SEO-optimized blog posts in seconds.
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-4 px-4 md:px-0">
           <button
             onClick={handleSignIn}
-            className="w-full flex items-center justify-center gap-4 bg-white text-black px-8 py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
+            className="w-full flex items-center justify-center gap-4 bg-white text-black px-6 md:px-8 py-4 md:py-5 rounded-2xl font-bold hover:bg-white/90 transition-all shadow-2xl shadow-white/10 group"
           >
             <Chrome className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-            <span className="text-lg">Continue with Google</span>
+            <span className="text-base md:text-lg">Continue with Google</span>
           </button>
 
           {isIframe && (
@@ -88,20 +88,20 @@ export default function Auth() {
                 href={window.location.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-4 bg-white/5 text-white/70 border border-white/10 px-8 py-5 rounded-2xl font-bold hover:bg-white/10 hover:text-white transition-all group"
+                className="w-full flex items-center justify-center gap-4 bg-white/5 text-white/70 border border-white/10 px-6 md:px-8 py-4 md:py-5 rounded-2xl font-bold hover:bg-white/10 hover:text-white transition-all group"
               >
                 <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                <span className="text-lg">Open in New Tab</span>
+                <span className="text-base md:text-lg">Open in New Tab</span>
               </a>
             </div>
           )}
         </div>
 
-        <div className="mt-20 flex items-center justify-center gap-12 opacity-20 grayscale hover:grayscale-0 transition-all duration-700">
+        <div className="mt-12 md:mt-20 flex flex-wrap items-center justify-center gap-6 md:gap-12 opacity-20 grayscale hover:grayscale-0 transition-all duration-700">
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">SEO Optimized</div>
-          <div className="w-1 h-1 bg-white/50 rounded-full" />
+          <div className="hidden md:block w-1 h-1 bg-white/50 rounded-full" />
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">AI Powered</div>
-          <div className="w-1 h-1 bg-white/50 rounded-full" />
+          <div className="hidden md:block w-1 h-1 bg-white/50 rounded-full" />
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">Fast Drafts</div>
         </div>
       </motion.div>
